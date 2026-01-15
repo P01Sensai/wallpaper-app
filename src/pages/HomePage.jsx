@@ -19,7 +19,7 @@ const CategoryGrid = ({ categories, onCategoryClick }) => (
   </div>
 );
 
-const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode }) => {
+const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch }) => {
   const [slide, setSlide] = useState(0);
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
@@ -64,7 +64,7 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
         <Header username={username} onLogout={onLogout} darkMode={darkMode} onToggleDarkMode={onToggleDarkMode} />
         <main className="container mx-auto px-4 py-8">
           <StatsBar darkMode={darkMode} />
-          <SearchBar darkMode={darkMode} onSearch={handleSearch} />
+          <SearchBar darkMode={darkMode} onSearch={onMainSearch} />
           {trending.length > 0 && (
             <div className="mb-12">
               <div className="flex items-center gap-2 mb-6">
