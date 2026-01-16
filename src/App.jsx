@@ -3,20 +3,21 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
+import ImageModal from './components/ImageModal';
 
 export default function WallpaperWebsite() {
-  // Possible states: 'login', 'home', 'category', 'search'
   const [page, setPage] = useState('login');
   const [cat, setCat] = useState(null);
-  // Add state to hold the search term
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState('');
   const [dark, setDark] = useState(false);
+  
+  // State for the currently zoomed image
+  const [selectedImage, setSelectedImage] = useState(null);
 
-  //Create the handler that switches to the search page
   const handleAppSearch = (query) => {
-    setSearchQuery(query); // Save the query string
-    setPage('search');     // Switch the view
+    setSearchQuery(query);
+    setPage('search');
   };
 
   const handleLogout = () => {
@@ -30,49 +31,47 @@ export default function WallpaperWebsite() {
       setSearchQuery('');
   }
 
-
-  // ROUTING LOGIC
-
-  if (page === 'login') {
-    return <LoginPage onLogin={u => { setUser(u); setPage('home'); }} />;
-  }
-  
-  if (page === 'category' && cat) {
-    return (
-      <CategoryPage 
-        category={cat} 
-        username={user} 
-        onLogout={handleLogout} 
-        onBack={handleBackToHome} 
-        darkMode={dark} 
-        onToggleDarkMode={() => setDark(!dark)} 
-      />
-    );
-  }
-
-  //Add the new 'search' route condition
-  if (page === 'search' && searchQuery) {
-    return (
-      <SearchPage
-        initialQuery={searchQuery} // Pass the stored query
-        username={user}
-        onLogout={handleLogout}
-        onBack={handleBackToHome}
-        darkMode={dark}
-        onToggleDarkMode={() => setDark(!dark)}
-      />
-    )
-  }
+  // Common props for all pages to make them cleaner
+  const commonProps = {
+      username: user,
+      onLogout: handleLogout,
+      darkMode: dark,
+      onToggleDarkMode: () => setDark(!dark),
+      // Pass the "Open Modal" function to every page
+      onImageClick: (img) => setSelectedImage(img) 
+  };
 
   return (
-    <HomePage 
-      username={user} 
-      onLogout={handleLogout} 
-      onCategoryClick={c => { setCat(c); setPage('category'); }} 
-      //Pass the new search handler down to HomePage
-      onMainSearch={handleAppSearch}
-      darkMode={dark} 
-      onToggleDarkMode={() => setDark(!dark)} 
-    />
+    <>
+      {/*The Modal sits on top of everything else */}
+      <ImageModal 
+        wallpaper={selectedImage} 
+        onClose={() => setSelectedImage(null)} 
+        darkMode={dark} 
+      />
+
+      {/* Page Routing */}
+      {page === 'login' ? (
+        <LoginPage onLogin={u => { setUser(u); setPage('home'); }} />
+      ) : page === 'category' && cat ? (
+        <CategoryPage 
+          category={cat} 
+          onBack={handleBackToHome} 
+          {...commonProps} 
+        />
+      ) : page === 'search' && searchQuery ? (
+        <SearchPage
+          initialQuery={searchQuery}
+          onBack={handleBackToHome}
+          {...commonProps}
+        />
+      ) : (
+        <HomePage 
+          onCategoryClick={c => { setCat(c); setPage('category'); }} 
+          onMainSearch={handleAppSearch}
+          {...commonProps} 
+        />
+      )}
+    </>
   );
 }

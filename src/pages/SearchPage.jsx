@@ -94,7 +94,7 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
           {/* Results Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filtered.map(w => (
-              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} />
+              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick}/>
             ))}
              {filtered.length === 0 && !loading && (
                  <div className={`col-span-full text-center py-20 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>

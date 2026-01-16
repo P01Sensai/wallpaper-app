@@ -1,45 +1,69 @@
 import React, { useState } from 'react';
-import { Heart, Sparkles, Zap, Download } from 'lucide-react';
+import { Heart, Sparkles, Zap, Download, Maximize2 } from 'lucide-react';
 
-const WallpaperCard = ({ wallpaper, showSize, darkMode }) => {
+const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick }) => {
   const [loaded, setLoaded] = useState(false);
   const [liked, setLiked] = useState(false);
 
   return (
     <div className={`group relative rounded-xl overflow-hidden border hover:shadow-2xl hover:-translate-y-2 transition-all ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+      
+      {/* Loading Spinner */}
       {!loaded && (
         <div className={`w-full h-64 flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
           <Sparkles className={`w-8 h-8 animate-spin ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
         </div>
       )}
-      <img 
-        src={wallpaper.urls?.regular || wallpaper.url} 
-        alt={wallpaper.alt_description || wallpaper.title || 'Wallpaper'} 
-        className={`w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110 ${loaded ? 'block' : 'hidden'}`} 
-        onLoad={() => setLoaded(true)} 
-      />
-      <button onClick={() => setLiked(!liked)} className={`absolute top-3 left-3 p-2 rounded-full backdrop-blur-md transition-all z-10 ${liked ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-700 hover:bg-red-500 hover:text-white'}`}>
+
+      {/* Main Image - Now Clickable! */}
+      <div 
+        className="cursor-zoom-in relative"
+        onClick={() => onImageClick && onImageClick(wallpaper)}
+      >
+        <img 
+          src={wallpaper.urls?.regular || wallpaper.url} 
+          alt={wallpaper.alt_description || 'Wallpaper'} 
+          className={`w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110 ${loaded ? 'block' : 'hidden'}`} 
+          onLoad={() => setLoaded(true)} 
+        />
+        
+        {/* Hover Hint Icon */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+            <div className="bg-black/30 backdrop-blur-sm p-2 rounded-full">
+                <Maximize2 className="w-6 h-6 text-white" />
+            </div>
+        </div>
+      </div>
+
+      {/* Like Button */}
+      <button onClick={(e) => { e.stopPropagation(); setLiked(!liked); }} className={`absolute top-3 left-3 p-2 rounded-full backdrop-blur-md transition-all z-10 ${liked ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-700 hover:bg-red-500 hover:text-white'}`}>
         <Heart className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
       </button>
+
+      {/* Size Tag */}
       {showSize && wallpaper.size && (
-        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium shadow-lg z-10">
           {wallpaper.size}
         </div>
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-        <div className="absolute bottom-0 p-4 w-full">
+
+      {/* Bottom info bar */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+        <div className="absolute bottom-0 p-4 w-full pointer-events-auto">
           <div className="flex items-center gap-2 mb-2">
             <Zap className="w-3 h-3 text-yellow-400" />
-            <p className="text-white text-sm font-medium line-clamp-1">{wallpaper.alt_description || wallpaper.title || 'Beautiful Wallpaper'}</p>
+            <p className="text-white text-sm font-medium line-clamp-1">{wallpaper.alt_description || 'Beautiful Wallpaper'}</p>
           </div>
           {wallpaper.user && (
             <p className="text-blue-200 text-xs mb-3">by {wallpaper.user.name}</p>
           )}
+          {/* Download Button */}
           <a 
-            href={wallpaper.links?.download || wallpaper.urls?.full || wallpaper.url} 
+            href={wallpaper.links?.download || wallpaper.urls?.full} 
             download 
             target="_blank" 
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()} // Prevent opening modal when downloading
             className="block w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-lg text-center hover:from-blue-600 hover:to-cyan-600 transition-all"
           >
             <span className="flex items-center justify-center gap-2">

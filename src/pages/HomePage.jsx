@@ -7,7 +7,7 @@ import Carousel from '../components/Carousel';
 import WallpaperCard from '../components/WallpaperCard';
 import { FloatingParticles, StatsBar, SearchBar } from '../components/SharedUI';
 
-// --- Internal Components ---
+//Internal Components 
 
 const CategoryGrid = ({ categories, onCategoryClick }) => (
   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -21,9 +21,9 @@ const CategoryGrid = ({ categories, onCategoryClick }) => (
   </div>
 );
 
-// NEW: Footer Component with About Me and Dummy Links
+// Footer Component with About Me and Dummy Links
 const Footer = ({ darkMode }) => {
-    // Dummy link data structure similar to the example image
+
     const linkGroups = [
         { title: "Product", links: ["Overview", "Features", "Solutions", "Tutorials", "Pricing", "Releases"] },
         { title: "Company", links: ["About Pramanshu", "Careers", "Press", "News", "Media Kit", "Contact"] },
@@ -38,7 +38,7 @@ const Footer = ({ darkMode }) => {
         <footer className={`mt-24 pt-16 pb-8 ${darkMode ? 'bg-gray-800/80 border-t border-gray-700' : 'bg-white/80 border-t border-gray-200'} backdrop-blur-lg relative z-10 rounded-t-3xl`}>
             <div className="container mx-auto px-4">
                 
-                {/* --- Top Section: About Me & Newsletter dummy --- */}
+                {/* Top Section: About Me & Newsletter dummy */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                     {/* About Me */}
                     <div>
@@ -49,7 +49,7 @@ const Footer = ({ darkMode }) => {
                         <p className={`${textColor} leading-relaxed mb-6 max-w-md`}>
                             Welcome to my digital gallery! I'm Pramanshu, a developer passionate about curating stunning visuals. This platform is built with React and powered by Unsplash to bring you high-quality wallpapers for every mood and device.
                         </p>
-                         {/* Dummy Social Icons */}
+
                          <div className="flex gap-4">
                              {['twitter', 'github', 'linkedin'].map(social => (
                                  <a key={social} href="#" onClick={e => e.preventDefault()} className={`p-2 rounded-full ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition-colors`}>
@@ -59,7 +59,6 @@ const Footer = ({ darkMode }) => {
                          </div>
                     </div>
 
-                    {/* Dummy Newsletter Subscribe */}
                     <div className={`p-6 rounded-2xl ${darkMode ? 'bg-gray-700/50' : 'bg-blue-50'}`}>
                          <h4 className={`text-lg font-semibold mb-2 ${headingColor}`}>Stay in the loop</h4>
                          <p className={`text-sm ${textColor} mb-4`}>Subscribe to get the latest wallpapers delivered to your inbox.</p>
@@ -70,7 +69,6 @@ const Footer = ({ darkMode }) => {
                     </div>
                 </div>
 
-                {/* --- Middle Section: Links Grid --- */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-12 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}">
                     {linkGroups.map((group, idx) => (
                         <div key={idx}>
@@ -89,7 +87,6 @@ const Footer = ({ darkMode }) => {
                     ))}
                 </div>
 
-                 {/* --- Bottom Section: Copyright --- */}
                 <div className={`pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm ${textColor}`}>
                     <p>© {new Date().getFullYear()} Pramanshu. All rights reserved.</p>
                      <p className="flex items-center gap-1">
@@ -102,9 +99,9 @@ const Footer = ({ darkMode }) => {
 };
 
 
-// --- Main HomePage Component ---
+// Main HomePage Component
 
-const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch }) => {
+const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick }) => {
   const [slide, setSlide] = useState(0);
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
@@ -140,11 +137,9 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <FloatingParticles darkMode={darkMode} />
-      {/* Added flex and flex-col to ensure footer sits at bottom */}
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header username={username} onLogout={onLogout} darkMode={darkMode} onToggleDarkMode={onToggleDarkMode} />
-        
-        {/* Added flex-grow to main content pushes footer down if content is short */}
+
         <main className="container mx-auto px-4 py-8 flex-grow">
           <StatsBar darkMode={darkMode} />
           <SearchBar darkMode={darkMode} onSearch={onMainSearch} />
@@ -171,13 +166,12 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
                 <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Popular Wallpapers</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {popular.map(w => <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} />)}
+                {popular.map(w => <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} />)}
               </div>
             </div>
           )}
         </main>
 
-        {/* NEW FOOTER ADDED HERE */}
         <Footer darkMode={darkMode} />
       </div>
     </div>
