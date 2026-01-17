@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Heart, Sparkles, Zap, Download, Maximize2 } from 'lucide-react';
 
-// Notice we are now using 'favorites' and 'onToggleFavorite' from props
 const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites = [], onToggleFavorite }) => {
   const [loaded, setLoaded] = useState(false);
 
-  // 1. CHECK: Is this specific wallpaper already in the list?
-  // We use .some() to check if any item in the favorites array matches this ID
+  // CHECK: Is this specific wallpaper already in the list?
+  // I use .some() to check if any item in the favorites array matches this ID
   const isLiked = favorites.some(f => f.id === wallpaper.id);
 
   return (
@@ -39,7 +38,7 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites 
         </div>
       </div>
 
-      {/* 2. REAL LIKE BUTTON */}
+      {/* LIKE BUTTON */}
       {/* Now calls the main App function to save/remove data */}
       <button 
         onClick={(e) => { 
