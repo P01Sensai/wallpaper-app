@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
+import FavoritesPage from './pages/FavoritesPage'; 
 import ImageModal from './components/ImageModal';
 
 export default function WallpaperWebsite() {
@@ -11,9 +12,31 @@ export default function WallpaperWebsite() {
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState('');
   const [dark, setDark] = useState(false);
-  
-  // State for the currently zoomed image
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // 1. FAVORITES LOGIC (The Brain)
+  // Load from LocalStorage when app starts
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Save to LocalStorage whenever favorites change
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  // Function to add/remove
+  const toggleFavorite = (wallpaper) => {
+    setFavorites(prev => {
+      const isFav = prev.find(w => w.id === wallpaper.id);
+      if (isFav) {
+        return prev.filter(w => w.id !== wallpaper.id); // Remove
+      } else {
+        return [...prev, wallpaper]; // Add
+      }
+    });
+  };
 
   const handleAppSearch = (query) => {
     setSearchQuery(query);
@@ -31,40 +54,39 @@ export default function WallpaperWebsite() {
       setSearchQuery('');
   }
 
-  // Common props for all pages to make them cleaner
+  // 2. Pass these new powers to every page
   const commonProps = {
       username: user,
       onLogout: handleLogout,
       darkMode: dark,
       onToggleDarkMode: () => setDark(!dark),
-      // Pass the "Open Modal" function to every page
-      onImageClick: (img) => setSelectedImage(img) 
+      onImageClick: (img) => setSelectedImage(img),
+      // Pass the favorites data down
+      favorites: favorites,
+      onToggleFavorite: toggleFavorite,
+      onGoToFavorites: () => setPage('favorites') // New Navigation helper
   };
 
   return (
     <>
-      {/*The Modal sits on top of everything else */}
+      {/* Modal now knows if image is liked */}
       <ImageModal 
         wallpaper={selectedImage} 
         onClose={() => setSelectedImage(null)} 
-        darkMode={dark} 
+        darkMode={dark}
+        isFavorite={favorites.some(f => f.id === selectedImage?.id)}
+        onToggleFavorite={() => selectedImage && toggleFavorite(selectedImage)}
       />
 
-      {/* Page Routing */}
       {page === 'login' ? (
         <LoginPage onLogin={u => { setUser(u); setPage('home'); }} />
       ) : page === 'category' && cat ? (
-        <CategoryPage 
-          category={cat} 
-          onBack={handleBackToHome} 
-          {...commonProps} 
-        />
+        <CategoryPage category={cat} onBack={handleBackToHome} {...commonProps} />
       ) : page === 'search' && searchQuery ? (
-        <SearchPage
-          initialQuery={searchQuery}
-          onBack={handleBackToHome}
-          {...commonProps}
-        />
+        <SearchPage initialQuery={searchQuery} onBack={handleBackToHome} {...commonProps} />
+      ) : page === 'favorites' ? (  
+        // 3. New Route for Favorites Page
+        <FavoritesPage onBack={handleBackToHome} {...commonProps} />
       ) : (
         <HomePage 
           onCategoryClick={c => { setCat(c); setPage('category'); }} 

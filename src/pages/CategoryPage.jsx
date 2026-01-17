@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import WallpaperCard from '../components/WallpaperCard';
 import { FloatingParticles, SearchBar } from '../components/SharedUI';
 
-const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggleDarkMode }) => {
+const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggleDarkMode, favorites, onToggleFavorite }) => {
   const [size, setSize] = useState('all');
   const [walls, setWalls] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +52,7 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
           categoryColor={category.color} 
           darkMode={darkMode} 
           onToggleDarkMode={onToggleDarkMode} 
+          onGoToFavorites={onGoToFavorites}
         />
         <main className="container mx-auto px-4 py-8">
           <SearchBar darkMode={darkMode} onSearch={handleSearch} />
@@ -79,7 +80,8 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filtered.map(w => (
-              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} />
+              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites}
+   onToggleFavorite={onToggleFavorite} />
             ))}
           </div>
         </main>

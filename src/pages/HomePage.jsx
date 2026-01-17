@@ -101,7 +101,7 @@ const Footer = ({ darkMode }) => {
 
 // Main HomePage Component
 
-const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick }) => {
+const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick, favorites, onToggleFavorite, onGoToFavorites }) => {
   const [slide, setSlide] = useState(0);
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
@@ -138,7 +138,7 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <FloatingParticles darkMode={darkMode} />
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Header username={username} onLogout={onLogout} darkMode={darkMode} onToggleDarkMode={onToggleDarkMode} />
+        <Header username={username} onLogout={onLogout} darkMode={darkMode} onToggleDarkMode={onToggleDarkMode} onGoToFavorites={onGoToFavorites} />
 
         <main className="container mx-auto px-4 py-8 flex-grow">
           <StatsBar darkMode={darkMode} />
@@ -166,7 +166,8 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
                 <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Popular Wallpapers</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {popular.map(w => <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} />)}
+                {popular.map(w => <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites} 
+    onToggleFavorite={onToggleFavorite} />)}
               </div>
             </div>
           )}

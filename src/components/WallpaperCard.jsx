@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Heart, Sparkles, Zap, Download, Maximize2 } from 'lucide-react';
 
-const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick }) => {
+// Notice we are now using 'favorites' and 'onToggleFavorite' from props
+const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites = [], onToggleFavorite }) => {
   const [loaded, setLoaded] = useState(false);
-  const [liked, setLiked] = useState(false);
+
+  // 1. CHECK: Is this specific wallpaper already in the list?
+  // We use .some() to check if any item in the favorites array matches this ID
+  const isLiked = favorites.some(f => f.id === wallpaper.id);
 
   return (
     <div className={`group relative rounded-xl overflow-hidden border hover:shadow-2xl hover:-translate-y-2 transition-all ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
@@ -15,7 +19,7 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick }) => {
         </div>
       )}
 
-      {/* Main Image - Now Clickable! */}
+      {/* Main Image */}
       <div 
         className="cursor-zoom-in relative"
         onClick={() => onImageClick && onImageClick(wallpaper)}
@@ -27,7 +31,7 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick }) => {
           onLoad={() => setLoaded(true)} 
         />
         
-        {/* Hover Hint Icon */}
+        {/* Hover Hint */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
             <div className="bg-black/30 backdrop-blur-sm p-2 rounded-full">
                 <Maximize2 className="w-6 h-6 text-white" />
@@ -35,9 +39,16 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick }) => {
         </div>
       </div>
 
-      {/* Like Button */}
-      <button onClick={(e) => { e.stopPropagation(); setLiked(!liked); }} className={`absolute top-3 left-3 p-2 rounded-full backdrop-blur-md transition-all z-10 ${liked ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-700 hover:bg-red-500 hover:text-white'}`}>
-        <Heart className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
+      {/* 2. REAL LIKE BUTTON */}
+      {/* Now calls the main App function to save/remove data */}
+      <button 
+        onClick={(e) => { 
+            e.stopPropagation(); // Stop the click from opening the modal
+            if (onToggleFavorite) onToggleFavorite(wallpaper); 
+        }} 
+        className={`absolute top-3 left-3 p-2 rounded-full backdrop-blur-md transition-all z-10 ${isLiked ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-700 hover:bg-red-500 hover:text-white'}`}
+      >
+        <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
       </button>
 
       {/* Size Tag */}
@@ -57,13 +68,13 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick }) => {
           {wallpaper.user && (
             <p className="text-blue-200 text-xs mb-3">by {wallpaper.user.name}</p>
           )}
-          {/* Download Button */}
+          
           <a 
             href={wallpaper.links?.download || wallpaper.urls?.full} 
             download 
             target="_blank" 
             rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()} // Prevent opening modal when downloading
+            onClick={(e) => e.stopPropagation()}
             className="block w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-lg text-center hover:from-blue-600 hover:to-cyan-600 transition-all"
           >
             <span className="flex items-center justify-center gap-2">

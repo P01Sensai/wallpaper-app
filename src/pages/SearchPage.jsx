@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import WallpaperCard from '../components/WallpaperCard';
 import { FloatingParticles, SearchBar } from '../components/SharedUI';
 
-const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onToggleDarkMode }) => {
+const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onToggleDarkMode, favorites, onToggleFavorite }) => {
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [size, setSize] = useState('all');
   const [walls, setWalls] = useState([]);
@@ -64,6 +64,7 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
           categoryColor="from-purple-500 to-pink-500" 
           darkMode={darkMode} 
           onToggleDarkMode={onToggleDarkMode} 
+          onGoToFavorites={onGoToFavorites}
         />
         <main className="container mx-auto px-4 py-8">
           {/* Search bar allows searching again here */}
@@ -94,7 +95,8 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
           {/* Results Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filtered.map(w => (
-              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick}/>
+              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites}
+   onToggleFavorite={onToggleFavorite}/>
             ))}
              {filtered.length === 0 && !loading && (
                  <div className={`col-span-full text-center py-20 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
