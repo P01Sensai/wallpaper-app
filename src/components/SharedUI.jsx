@@ -21,24 +21,76 @@ export const FloatingParticles = ({ darkMode }) => (
   </div>
 );
 
+//  NEW ANIMATED STATS BAR 
 export const StatsBar = ({ darkMode }) => {
+  // Configuration for the stats
   const stats = [
-    { icon: <Image className="w-4 h-4" />, label: '10K+', text: 'Wallpapers' },
-    { icon: <Eye className="w-4 h-4" />, label: '1M+', text: 'Views' },
-    { icon: <Download className="w-4 h-4" />, label: '500K+', text: 'Downloads' },
-    { icon: <Star className="w-4 h-4" />, label: '4.9', text: 'Rating' }
+    { icon: <Image className="w-5 h-5" />, value: 10000, suffix: '+', label: 'Wallpapers', color: 'from-blue-400 to-cyan-400' },
+    { icon: <Eye className="w-5 h-5" />, value: 1500, suffix: 'K+', label: 'Total Views', color: 'from-purple-400 to-pink-400' },
+    { icon: <Download className="w-5 h-5" />, value: 500, suffix: 'K+', label: 'Downloads', color: 'from-green-400 to-emerald-400' },
+    { icon: <Star className="w-5 h-5" />, value: 4.9, suffix: '', label: 'Avg Rating', color: 'from-yellow-400 to-orange-400', isDecimal: true }
   ];
 
+  // Helper component to animate numbers
+  const AnimatedNumber = ({ target, isDecimal }) => {
+    const [count, setCount] = useState(0);
+    
+    useEffect(() => {
+      let startTime;
+      const duration = 2000; // 2 seconds animation
+      
+      const animate = (currentTime) => {
+        if (!startTime) startTime = currentTime;
+        const progress = (currentTime - startTime) / duration;
+
+        if (progress < 1) {
+          setCount(progress * target);
+          requestAnimationFrame(animate);
+        } else {
+          setCount(target);
+        }
+      };
+      
+      requestAnimationFrame(animate);
+    }, [target]);
+
+    return isDecimal ? count.toFixed(1) : Math.floor(count).toLocaleString();
+  };
+
   return (
-    <div className={`${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-md rounded-2xl p-4 sm:p-6 border ${darkMode ? 'border-gray-700' : 'border-gray-200'} shadow-xl mb-8`}>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div className={`
+      relative overflow-hidden mb-12 rounded-3xl p-1
+      bg-gradient-to-r ${darkMode ? 'from-gray-800 to-gray-900' : 'from-white to-gray-50'}
+      shadow-2xl border ${darkMode ? 'border-gray-700' : 'border-white'}
+    `}>
+      {/* Decorative background glow */}
+      <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50`}></div>
+
+      <div className={`
+        grid grid-cols-2 md:grid-cols-4 gap-4 p-6 md:p-8
+        backdrop-blur-xl ${darkMode ? 'bg-gray-900/40' : 'bg-white/40'}
+      `}>
         {stats.map((stat, i) => (
-          <div key={i} className="text-center group">
-            <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full mb-2 ${darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600'} group-hover:scale-110 transition-transform`}>
+          <div key={i} className="group flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:scale-105 cursor-default">
+            
+            {/* Animated Icon Circle */}
+            <div className={`
+              mb-3 p-3 rounded-2xl shadow-lg transition-transform duration-300 group-hover:rotate-12
+              bg-gradient-to-br ${stat.color} text-white
+            `}>
               {stat.icon}
             </div>
-            <p className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>{stat.label}</p>
-            <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{stat.text}</p>
+
+            {/* Animated Number with Gradient Text */}
+            <div className={`text-3xl font-black mb-1 bg-clip-text text-transparent bg-gradient-to-r ${stat.color}`}>
+              <AnimatedNumber target={stat.value} isDecimal={stat.isDecimal} />
+              {stat.suffix}
+            </div>
+
+            {/* Label */}
+            <p className={`text-sm font-medium tracking-wide uppercase ${darkMode ? 'text-gray-400 group-hover:text-gray-200' : 'text-gray-500 group-hover:text-gray-700'}`}>
+              {stat.label}
+            </p>
           </div>
         ))}
       </div>
