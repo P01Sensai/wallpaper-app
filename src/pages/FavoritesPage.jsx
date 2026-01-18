@@ -55,6 +55,7 @@ const FavoritesPage = ({ username, onLogout, onBack, darkMode, onToggleDarkMode,
                     onImageClick={onImageClick}
                     favorites={favorites} 
                     onToggleFavorite={onToggleFavorite}
+                    showToast={showToast}
                   />
                 ))}
              </div>

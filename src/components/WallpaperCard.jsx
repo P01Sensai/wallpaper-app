@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, Sparkles, Zap, Download, Maximize2 } from 'lucide-react';
 
-const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites = [], onToggleFavorite }) => {
+const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites = [], onToggleFavorite, showToast }) => {
   const [loaded, setLoaded] = useState(false);
 
   // CHECK: Is this specific wallpaper already in the list?
@@ -73,7 +73,8 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites 
             download 
             target="_blank" 
             rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {e.stopPropagation(); 
+              if(showToast) showToast("Download Started... 🚀", "success");}} // notification trigger
             className="block w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-lg text-center hover:from-blue-600 hover:to-cyan-600 transition-all"
           >
             <span className="flex items-center justify-center gap-2">

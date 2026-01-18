@@ -81,7 +81,7 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filtered.map(w => (
               <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites}
-   onToggleFavorite={onToggleFavorite} />
+   onToggleFavorite={onToggleFavorite} showToast={showToast} />
             ))}
           </div>
         </main>

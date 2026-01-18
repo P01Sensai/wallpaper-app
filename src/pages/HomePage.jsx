@@ -101,7 +101,7 @@ const Footer = ({ darkMode }) => {
 
 // Main HomePage Component
 
-const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick, favorites, onToggleFavorite, onGoToFavorites }) => {
+const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast }) => {
   const [slide, setSlide] = useState(0);
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
@@ -167,7 +167,7 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {popular.map(w => <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites} 
-    onToggleFavorite={onToggleFavorite} />)}
+    onToggleFavorite={onToggleFavorite} showToast={showToast} />)}
               </div>
             </div>
           )}

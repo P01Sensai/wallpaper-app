@@ -5,6 +5,7 @@ import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
 import FavoritesPage from './pages/FavoritesPage'; 
 import ImageModal from './components/ImageModal';
+import { ToastNotification } from './components/SharedUI';
 
 export default function WallpaperWebsite() {
   const [page, setPage] = useState('login');
@@ -13,8 +14,14 @@ export default function WallpaperWebsite() {
   const [user, setUser] = useState('');
   const [dark, setDark] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success'});
 
-  // 1. FAVORITES LOGIC (The Brain)
+  //Toast fucntion or comfirmation
+  const showToast = (message, type = 'success') => {
+    setToast({show:true, message, type});
+    setTimeout(() => setToast(prev => ({...prev, show: false})), 3000);
+  }
+  // FAVORITES LOGIC 
   // Load from LocalStorage when app starts
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem('favorites');
@@ -31,8 +38,10 @@ export default function WallpaperWebsite() {
     setFavorites(prev => {
       const isFav = prev.find(w => w.id === wallpaper.id);
       if (isFav) {
+        showToast("Removed from Favorites", "info"); // Show toast
         return prev.filter(w => w.id !== wallpaper.id); // Remove
       } else {
+        showToast("Added to Favorites ❤️", "success"); // Show toast
         return [...prev, wallpaper]; // Add
       }
     });
@@ -64,11 +73,14 @@ export default function WallpaperWebsite() {
       // Pass the favorites data down
       favorites: favorites,
       onToggleFavorite: toggleFavorite,
-      onGoToFavorites: () => setPage('favorites') // New Navigation helper
+      onGoToFavorites: () => setPage('favorites'), // New Navigation helper
+      showToast: showToast // Pass down the toast function
   };
 
   return (
     <>
+      {/* Toast Notification */}
+      <ToastNotification show={toast.show} message={toast.message} type={toast.type} />
       {/* Modal now knows if image is liked */}
       <ImageModal 
         wallpaper={selectedImage} 
@@ -76,6 +88,7 @@ export default function WallpaperWebsite() {
         darkMode={dark}
         isFavorite={favorites.some(f => f.id === selectedImage?.id)}
         onToggleFavorite={() => selectedImage && toggleFavorite(selectedImage)}
+        showToast={showToast}
       />
 
       {page === 'login' ? (

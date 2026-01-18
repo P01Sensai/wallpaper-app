@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Image, Eye, Download, Star } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Image, Eye, Download, Star, CheckCircle, Info } from 'lucide-react';
 
 export const FloatingParticles = ({ darkMode }) => (
   <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -68,6 +68,19 @@ export const SearchBar = ({ darkMode, onSearch }) => {
         <button onClick={handleSearch} className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:from-blue-600 hover:to-cyan-600">
           Search
         </button>
+      </div>
+    </div>
+  );
+};
+
+export const ToastNotification = ({ message, show, type = 'success' }) => {
+  if (!show) return null;
+
+  return (
+    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-5 fade-in duration-300">
+      <div className={`flex items-center gap-3 px-6 py-3 rounded-full shadow-2xl ${type === 'success' ? 'bg-gray-900 text-white' : 'bg-blue-600 text-white'}`}>
+        {type === 'success' ? <CheckCircle className="w-5 h-5 text-green-400" /> : <Info className="w-5 h-5 text-white" />}
+        <span className="font-medium">{message}</span>
       </div>
     </div>
   );
