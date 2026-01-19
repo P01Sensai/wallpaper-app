@@ -70,7 +70,7 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
           onGoToFavorites={onGoToFavorites}
         />
         
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 pt-24 pb-8">
           {/* Filter Section */}
           <div className={`mb-8 rounded-2xl p-6 border shadow-xl ${darkMode ? 'bg-gray-800/80 border-gray-700' : 'bg-white/80 border-gray-200'}`}>
             <div className="flex items-center gap-2 mb-4">
