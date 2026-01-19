@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Sun, Moon, Home, Image, LogOut, Menu, X, User, Heart } from 'lucide-react';
 
 const Header = ({ username, onLogout, showBack, onBack, categoryName, categoryIcon, categoryColor, darkMode, onToggleDarkMode, onGoToFavorites }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50); // this is threshold if it is scrolled more than 50px
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const headerStyle = isScrolled
+    ? (darkMode ? 'bg-gray-900/95 border-b border-gray-700 shadow-md' : 'bg-white/95 border-b border-gray-200 shadow-md')
+    : 'bg-transparent border-b border-transparent';
+  
+  const textColor = (!isScrolled && !showBack) ? 'text-white drop-shadow-md' : (darkMode ? 'text-white' : 'text-gray-900');
+  const iconColor = (!isScrolled && !showBack) ? 'text-white/80 hover:text-white drop-shadow-md' : (darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900');
 
   return (
-    <header className={`${darkMode ? 'bg-gray-900/95 border-gray-700' : 'bg-white/95 border-gray-200'} backdrop-blur-md border-b sticky top-0 z-50 shadow-sm transition-colors duration-300`}>
+   <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerStyle} backdrop-blur-sm`}>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
 

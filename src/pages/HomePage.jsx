@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Star, Sparkles, Heart } from 'lucide-react';
+import { TrendingUp, Star, Sparkles, Heart, Search } from 'lucide-react';
 import { unsplashApi } from '../services/unsplashApi';
 import { CATEGORIES } from '../config/constants';
 import Header from '../components/Header';
 import Carousel from '../components/Carousel';
 import WallpaperCard from '../components/WallpaperCard';
-import { FloatingParticles, StatsBar, SearchBar } from '../components/SharedUI';
+import { FloatingParticles, StatsBar } from '../components/SharedUI';
 
-//Internal Components 
+// Internal Components 
 
 const CategoryGrid = ({ categories, onCategoryClick }) => (
   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -21,9 +21,8 @@ const CategoryGrid = ({ categories, onCategoryClick }) => (
   </div>
 );
 
-// Footer Component with About Me and Dummy Links
+// Footer Component
 const Footer = ({ darkMode }) => {
-
     const linkGroups = [
         { title: "Product", links: ["Overview", "Features", "Solutions", "Tutorials", "Pricing", "Releases"] },
         { title: "Company", links: ["About Pramanshu", "Careers", "Press", "News", "Media Kit", "Contact"] },
@@ -37,10 +36,7 @@ const Footer = ({ darkMode }) => {
     return (
         <footer className={`mt-24 pt-16 pb-8 ${darkMode ? 'bg-gray-800/80 border-t border-gray-700' : 'bg-white/80 border-t border-gray-200'} backdrop-blur-lg relative z-10 rounded-t-3xl`}>
             <div className="container mx-auto px-4">
-                
-                {/* Top Section: About Me & Newsletter dummy */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-                    {/* About Me */}
                     <div>
                         <div className="flex items-center gap-2 mb-4">
                              <Sparkles className="w-6 h-6 text-blue-500" />
@@ -49,7 +45,6 @@ const Footer = ({ darkMode }) => {
                         <p className={`${textColor} leading-relaxed mb-6 max-w-md`}>
                             Welcome to my digital gallery! I'm Pramanshu, a developer passionate about curating stunning visuals. This platform is built with React and powered by Unsplash to bring you high-quality wallpapers for every mood and device.
                         </p>
-
                          <div className="flex gap-4">
                              {['twitter', 'github', 'linkedin'].map(social => (
                                  <a key={social} href="#" onClick={e => e.preventDefault()} className={`p-2 rounded-full ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition-colors`}>
@@ -58,7 +53,6 @@ const Footer = ({ darkMode }) => {
                              ))}
                          </div>
                     </div>
-
                     <div className={`p-6 rounded-2xl ${darkMode ? 'bg-gray-700/50' : 'bg-blue-50'}`}>
                          <h4 className={`text-lg font-semibold mb-2 ${headingColor}`}>Stay in the loop</h4>
                          <p className={`text-sm ${textColor} mb-4`}>Subscribe to get the latest wallpapers delivered to your inbox.</p>
@@ -68,15 +62,14 @@ const Footer = ({ darkMode }) => {
                          </div>
                     </div>
                 </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-12 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}">
+                {/* Added backticks for template literal below */}
+                <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 pb-12 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                     {linkGroups.map((group, idx) => (
                         <div key={idx}>
                             <h4 className={`text-sm font-semibold uppercase tracking-wider mb-4 ${headingColor}`}>{group.title}</h4>
                             <ul className="space-y-3">
                                 {group.links.map((link, linkIdx) => (
                                     <li key={linkIdx}>
-                                        {/* Dummy link with preventDefault */}
                                         <a href="#" onClick={(e) => e.preventDefault()} className={`${textColor} hover:${headingColor} transition-colors text-[15px] font-medium`}>
                                             {link}
                                         </a>
@@ -86,7 +79,6 @@ const Footer = ({ darkMode }) => {
                         </div>
                     ))}
                 </div>
-
                 <div className={`pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm ${textColor}`}>
                     <p>© {new Date().getFullYear()} Pramanshu. All rights reserved.</p>
                      <p className="flex items-center gap-1">
@@ -98,29 +90,94 @@ const Footer = ({ darkMode }) => {
     );
 };
 
+// Hero Section Component 
+const HeroSection = ({ heroImage, onSearch }) => {
+    const [query, setQuery] = useState('');
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (query.trim()) onSearch(query);
+    };
 
-// Main HomePage Component
+    return (
+        <div className="relative h-[500px] w-full flex items-center justify-center mb-12">
+            <div className="absolute inset-0 z-0">
+                {heroImage ? (
+                    <img src={heroImage.urls.regular} alt="Hero" className="w-full h-full object-cover" />
+                ) : (
+                    <div className="w-full h-full bg-gray-900 animate-pulse" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
+            </div>
+
+            <div className="relative z-10 w-full max-w-3xl px-4 text-center mt-16">
+                <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+                    Discover your next <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Masterpiece</span>
+                </h1>
+                <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto drop-shadow-md">
+                    Powered by creators everywhere. The internet's source of freely-usable images.
+                </p>
+                
+                <div className="relative max-w-2xl mx-auto transform transition-all hover:scale-[1.02]">
+                    <div className="absolute inset-0 bg-white/20 backdrop-blur-md rounded-2xl blur-md"></div>
+                    <form onSubmit={handleSearch} className="relative flex items-center bg-white rounded-2xl shadow-2xl overflow-hidden p-2">
+                        <Search className="w-6 h-6 text-gray-400 ml-3" />
+                        <input 
+                            type="text" 
+                            placeholder="Search wallpapers (e.g. 'Cyberpunk', 'Nature')..." 
+                            className="w-full px-4 py-3 outline-none text-gray-800 text-lg placeholder-gray-400"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                        <button type="submit" className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all">
+                            Search
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+// Main HomePage Component 
 
 const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast }) => {
   const [slide, setSlide] = useState(0);
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
+  const [heroImage, setHeroImage] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadImages = async () => {
-      setLoading(true);
-      const trendingData = await unsplashApi.getRandomPhotos(5, 'wallpaper,landscape');
-      const popularData = await unsplashApi.getRandomPhotos(12, 'nature,city,abstract');
-      setTrending(trendingData);
-      setPopular(popularData);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const heroData = await unsplashApi.getRandomPhotos(1, 'landscape,mountains,abstract');
+        if (heroData && heroData.length > 0) setHeroImage(heroData[0]);
+
+        const trendingData = await unsplashApi.getRandomPhotos(5, 'wallpaper,landscape');
+        const popularData = await unsplashApi.getRandomPhotos(12, 'nature,city,abstract');
+
+        // Added "|| []" to prevent crash if data is undefined
+        setTrending(trendingData || []);
+        setPopular(popularData || []);
+      } catch (error) {
+        console.error("Failed to load images:", error);
+        // Even on error, set empty arrays so the app doesn't crash
+        setTrending([]);
+        setPopular([]);
+      } finally {
+        setLoading(false);
+      }
     };
     loadImages();
   }, []);
 
   useEffect(() => {
-    if (trending.length > 0) {
+    // Added check for trending existence
+    if (trending && trending.length > 0) {
       const int = setInterval(() => setSlide(s => (s + 1) % trending.length), 4000);
       return () => clearInterval(int);
     }
@@ -140,11 +197,12 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header username={username} onLogout={onLogout} darkMode={darkMode} onToggleDarkMode={onToggleDarkMode} onGoToFavorites={onGoToFavorites} />
 
+        <HeroSection heroImage={heroImage} onSearch={onMainSearch} /> 
+
         <main className="container mx-auto px-4 py-8 flex-grow">
           <StatsBar darkMode={darkMode} />
-          <SearchBar darkMode={darkMode} onSearch={onMainSearch} />
           
-          {trending.length > 0 && (
+          {trending && trending.length > 0 && (
             <div className="mb-12">
               <div className="flex items-center gap-2 mb-6">
                 <TrendingUp className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-blue-500'}`} />
@@ -159,15 +217,26 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
             <CategoryGrid categories={CATEGORIES} onCategoryClick={onCategoryClick} />
           </div>
           
-          {popular.length > 0 && (
+          {/* Added popular && check */}
+          {popular && popular.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-6">
                 <Star className="w-6 h-6 text-yellow-400 fill-current" />
                 <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Popular Wallpapers</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {popular.map(w => <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites} 
-    onToggleFavorite={onToggleFavorite} showToast={showToast} />)}
+                {popular.map(w => (
+                    <WallpaperCard 
+                        key={w.id} 
+                        wallpaper={w} 
+                        showSize 
+                        darkMode={darkMode} 
+                        onImageClick={onImageClick} 
+                        favorites={favorites} 
+                        onToggleFavorite={onToggleFavorite} 
+                        showToast={showToast} 
+                    />
+                ))}
               </div>
             </div>
           )}

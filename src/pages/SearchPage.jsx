@@ -5,7 +5,8 @@ import Header from '../components/Header';
 import WallpaperCard from '../components/WallpaperCard';
 import { FloatingParticles, SearchBar } from '../components/SharedUI';
 
-const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onToggleDarkMode, favorites, onToggleFavorite }) => {
+//Added all the new props 
+const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onToggleDarkMode, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast }) => {
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [size, setSize] = useState('all');
   const [walls, setWalls] = useState([]);
@@ -16,27 +17,35 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
     setCurrentQuery(initialQuery);
   }, [initialQuery]);
 
-  // Fetch data whenever currentQuery changes
   useEffect(() => {
     const loadSearchImages = async () => {
       if (!currentQuery) return;
       setLoading(true);
       
-      const data = await unsplashApi.searchPhotos(currentQuery, 1, 24);
-      
-      // Randomly assign sizes for demo purposes
-      const wallsWithSize = data.map(w => ({ ...w, size: ['mobile', 'tablet', 'pc'][Math.floor(Math.random() * 3)] }));
-      setWalls(wallsWithSize);
-      setLoading(false);
+      try {
+        const data = await unsplashApi.searchPhotos(currentQuery, 1, 24);
+        
+        // Added "|| []" safety check so it never crashes
+        const safeData = data || [];
+
+        const wallsWithSize = safeData.map(w => ({ 
+            ...w, 
+            size: ['mobile', 'tablet', 'pc'][Math.floor(Math.random() * 3)] 
+        }));
+        setWalls(wallsWithSize);
+      } catch (error) {
+        console.error("Search failed:", error);
+        setWalls([]); // Set empty array on error
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadSearchImages();
   }, [currentQuery]);
 
-  // Filter logic
   const filtered = size === 'all' ? walls : walls.filter(w => w.size === size);
 
-  // Handle searching *within* the search page
   const handleLocalSearch = (newQuery) => {
       setCurrentQuery(newQuery);
   };
@@ -59,15 +68,16 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
           onLogout={onLogout} 
           showBack 
           onBack={onBack} 
+          // Header now updates correctly based on what you are viewing
           categoryName={`Results: "${currentQuery}"`} 
           categoryIcon={<Search className="w-6 h-6 text-white" />} 
           categoryColor="from-purple-500 to-pink-500" 
           darkMode={darkMode} 
-          onToggleDarkMode={onToggleDarkMode} 
-          onGoToFavorites={onGoToFavorites}
+          onToggleDarkMode={onToggleDarkMode}
+          onGoToFavorites={onGoToFavorites} 
         />
+        
         <main className="container mx-auto px-4 py-8">
-          {/* Search bar allows searching again here */}
           <SearchBar darkMode={darkMode} onSearch={handleLocalSearch} />
           
           {/* Filter Section */}
@@ -94,9 +104,18 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
 
           {/* Results Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {/* Passed all necessary props to Card (Toast, Favorites) */}
             {filtered.map(w => (
-              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites}
-   onToggleFavorite={onToggleFavorite} showToast={showToast} />
+              <WallpaperCard 
+                key={w.id} 
+                wallpaper={w} 
+                showSize 
+                darkMode={darkMode}
+                onImageClick={onImageClick}
+                favorites={favorites}
+                onToggleFavorite={onToggleFavorite}
+                showToast={showToast}
+              />
             ))}
              {filtered.length === 0 && !loading && (
                  <div className={`col-span-full text-center py-20 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>

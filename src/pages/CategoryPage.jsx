@@ -3,37 +3,51 @@ import { Sparkles, Filter, Clock } from 'lucide-react';
 import { unsplashApi } from '../services/unsplashApi';
 import Header from '../components/Header';
 import WallpaperCard from '../components/WallpaperCard';
-import { FloatingParticles, SearchBar } from '../components/SharedUI';
+import { FloatingParticles } from '../components/SharedUI';
 
-const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggleDarkMode, favorites, onToggleFavorite }) => {
-  const [size, setSize] = useState('all');
+// Accepting all new props
+const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggleDarkMode, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast }) => {
   const [walls, setWalls] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [size, setSize] = useState('all');
 
   useEffect(() => {
     const loadCategoryImages = async () => {
       setLoading(true);
-      const data = await unsplashApi.searchPhotos(category.query, 1, 24);
-      // Randomly assign sizes for demo purposes
-      const wallsWithSize = data.map(w => ({ ...w, size: ['mobile', 'tablet', 'pc'][Math.floor(Math.random() * 3)] }));
-      setWalls(wallsWithSize);
-      setLoading(false);
+      try {
+        // Use the category term (e.g., "nature") to fetch images
+        const data = await unsplashApi.searchPhotos(category.term, 1, 24);
+        
+        // Safety check "|| []" to prevent white screen crash
+        const safeData = data || [];
+
+        // Add random "size" tags for filtering demo
+        const wallsWithSize = safeData.map(w => ({ 
+            ...w, 
+            size: ['mobile', 'tablet', 'pc'][Math.floor(Math.random() * 3)] 
+        }));
+        
+        setWalls(wallsWithSize);
+      } catch (error) {
+        console.error("Failed to load category:", error);
+        setWalls([]); // Prevent crash
+      } finally {
+        setLoading(false);
+      }
     };
-    loadCategoryImages();
+
+    if (category) {
+        loadCategoryImages();
+    }
   }, [category]);
 
   const filtered = size === 'all' ? walls : walls.filter(w => w.size === size);
 
-  const handleSearch = async (query) => {
-    const results = await unsplashApi.searchPhotos(query, 1, 24);
-    const wallsWithSize = results.map(w => ({ ...w, size: ['mobile', 'tablet', 'pc'][Math.floor(Math.random() * 3)] }));
-    setWalls(wallsWithSize);
-  };
-
   if (loading) {
     return (
       <div className={`min-h-screen flex items-center justify-center ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-        <Sparkles className="w-16 h-16 animate-spin text-blue-500" />
+        <FloatingParticles darkMode={darkMode} />
+        <Sparkles className="w-16 h-16 animate-spin text-blue-500 relative z-10" />
       </div>
     );
   }
@@ -42,21 +56,22 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <FloatingParticles darkMode={darkMode} />
       <div className="relative z-10">
+        
         <Header 
           username={username} 
           onLogout={onLogout} 
           showBack 
           onBack={onBack} 
-          categoryName={`${category.name} Wallpapers`} 
+          categoryName={category.name} 
           categoryIcon={category.icon} 
           categoryColor={category.color} 
           darkMode={darkMode} 
           onToggleDarkMode={onToggleDarkMode} 
           onGoToFavorites={onGoToFavorites}
         />
+        
         <main className="container mx-auto px-4 py-8">
-          <SearchBar darkMode={darkMode} onSearch={handleSearch} />
-          
+          {/* Filter Section */}
           <div className={`mb-8 rounded-2xl p-6 border shadow-xl ${darkMode ? 'bg-gray-800/80 border-gray-700' : 'bg-white/80 border-gray-200'}`}>
             <div className="flex items-center gap-2 mb-4">
               <Filter className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-blue-500'}`} />
@@ -74,15 +89,31 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
             </div>
             <p className={`text-sm flex items-center gap-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               <Clock className="w-4 h-4" />
-              Showing {filtered.length} wallpapers
+              Found {filtered.length} wallpapers
             </p>
           </div>
 
+          {/* Results Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {/* WallpaperCard gets favorites, toast, and toggle props */}
             {filtered.map(w => (
-              <WallpaperCard key={w.id} wallpaper={w} showSize darkMode={darkMode} onImageClick={onImageClick} favorites={favorites}
-   onToggleFavorite={onToggleFavorite} showToast={showToast} />
+              <WallpaperCard 
+                key={w.id} 
+                wallpaper={w} 
+                showSize 
+                darkMode={darkMode} 
+                onImageClick={onImageClick}
+                favorites={favorites}
+                onToggleFavorite={onToggleFavorite}
+                showToast={showToast}
+              />
             ))}
+             {filtered.length === 0 && !loading && (
+                 <div className={`col-span-full text-center py-20 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                     <p className="text-2xl font-bold mb-2">No results found.</p>
+                     <p>Maybe try a different category?</p>
+                 </div>
+             )}
           </div>
         </main>
       </div>
