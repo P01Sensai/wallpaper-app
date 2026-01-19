@@ -26,7 +26,7 @@ const FavoritesPage = ({ username, onLogout, onBack, darkMode, onToggleDarkMode,
           onGoToFavorites={onGoToFavorites}
         />
         
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 pt-24 pb-8">
           {/* Stats Box */}
           <div className={`mb-8 p-6 rounded-2xl border ${darkMode ? 'bg-gray-800/80 border-gray-700' : 'bg-white/80 border-gray-200'} shadow-lg backdrop-blur-md`}>
              <div className="flex items-center gap-3">
