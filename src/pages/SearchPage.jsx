@@ -77,7 +77,7 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
           onGoToFavorites={onGoToFavorites} 
         />
         
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 pt-24 pb-8">
           <SearchBar darkMode={darkMode} onSearch={handleLocalSearch} />
           
           {/* Filter Section */}
