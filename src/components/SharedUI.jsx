@@ -137,3 +137,50 @@ export const ToastNotification = ({ message, show, type = 'success' }) => {
     </div>
   );
 };
+
+// SPLASH SCREEN COMPONENT
+export const SplashScreen = ({ finishLoading }) => {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    // Wait 2.5 seconds, then start fading out
+    const timeout = setTimeout(() => {
+        setVisible(false);
+        // Wait another 0.5s for fade animation to finish, then tell App.jsx we are done
+        setTimeout(finishLoading, 500); 
+    }, 2500);
+    return () => clearTimeout(timeout);
+  }, [finishLoading]);
+
+  return (
+    <div 
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-900 transition-opacity duration-700 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+    >
+        {/* Animated Background Gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/40 via-gray-900 to-gray-900"></div>
+
+        {/* Logo Animation */}
+        <div className="relative z-10 flex flex-col items-center">
+            <div className="relative mb-6">
+                {/* Glowing Ring */}
+                <div className="absolute inset-0 bg-blue-500 rounded-3xl blur-xl opacity-50 animate-pulse"></div>
+                <div className="relative bg-gradient-to-br from-blue-600 to-cyan-500 p-6 rounded-3xl shadow-2xl animate-bounce">
+                    <Image className="w-12 h-12 text-white" />
+                </div>
+            </div>
+            
+            <h1 className="text-4xl font-bold text-white tracking-tight mb-2 animate-pulse">
+                WallpaperHub
+            </h1>
+            <p className="text-blue-400 text-sm tracking-widest uppercase font-semibold">
+                Curating Masterpieces
+            </p>
+        </div>
+
+        {/* Loading Spinner at Bottom */}
+        <div className="absolute bottom-12">
+            <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+        </div>
+    </div>
+  );
+};

@@ -5,7 +5,7 @@ import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
 import FavoritesPage from './pages/FavoritesPage'; 
 import ImageModal from './components/ImageModal';
-import { ToastNotification } from './components/SharedUI';
+import { ToastNotification, SplashScreen } from './components/SharedUI';
 
 export default function WallpaperWebsite() {
   const [page, setPage] = useState('login');
@@ -15,6 +15,7 @@ export default function WallpaperWebsite() {
   const [dark, setDark] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success'});
+  const [isLoading, setIsLoading] = useState(true); // For Splash Screen
 
   //Toast fucntion or comfirmation
   const showToast = (message, type = 'success') => {
@@ -79,6 +80,8 @@ export default function WallpaperWebsite() {
 
   return (
     <>
+      {/* Splash Screen */}
+      {isLoading && <SplashScreen finishLoading={() => setIsLoading(false)} />}
       {/* Toast Notification */}
       <ToastNotification show={toast.show} message={toast.message} type={toast.type} />
       {/* Modal now knows if image is liked */}
