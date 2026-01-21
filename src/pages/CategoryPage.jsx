@@ -15,7 +15,7 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
     const loadCategoryImages = async () => {
       setLoading(true);
       try {
-        // Use the category term (e.g., "nature") to fetch images
+        // Use the category term  to fetch images
         const data = await unsplashApi.searchPhotos(category.term, 1, 24);
         
         // Safety check "|| []" to prevent white screen crash

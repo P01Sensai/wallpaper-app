@@ -64,7 +64,7 @@ export default function WallpaperWebsite() {
       setSearchQuery('');
   }
 
-  // 2. Pass these new powers to every page
+  // Pass these new powers to every page
   const commonProps = {
       username: user,
       onLogout: handleLogout,
@@ -101,7 +101,7 @@ export default function WallpaperWebsite() {
       ) : page === 'search' && searchQuery ? (
         <SearchPage initialQuery={searchQuery} onBack={handleBackToHome} {...commonProps} />
       ) : page === 'favorites' ? (  
-        // 3. New Route for Favorites Page
+        // New Route for Favorites Page
         <FavoritesPage onBack={handleBackToHome} {...commonProps} />
       ) : (
         <HomePage 
