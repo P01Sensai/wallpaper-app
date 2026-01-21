@@ -139,48 +139,77 @@ export const ToastNotification = ({ message, show, type = 'success' }) => {
 };
 
 // SPLASH SCREEN COMPONENT
+
 export const SplashScreen = ({ finishLoading }) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    // Wait 2.5 seconds, then start fading out
     const timeout = setTimeout(() => {
         setVisible(false);
-        // Wait another 0.5s for fade animation to finish, then tell App.jsx we are done
-        setTimeout(finishLoading, 500); 
-    }, 2500);
+        setTimeout(finishLoading, 700); 
+    }, 3000); 
     return () => clearTimeout(timeout);
   }, [finishLoading]);
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-900 transition-opacity duration-700 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black transition-all duration-1000 ${visible ? 'opacity-100' : 'opacity-0 scale-110 pointer-events-none'}`}
     >
-        {/* Animated Background Gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/40 via-gray-900 to-gray-900"></div>
+        {/*ANIMATED BACKGROUND BLOBS */}
+        <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(59,130,246,0.15)_0%,transparent_50%)] animate-spin-slow"></div>
+            <div className="absolute top-[20%] right-[20%] w-[80vw] h-[80vw] bg-[radial-gradient(circle,rgba(6,182,212,0.1)_0%,transparent_70%)] animate-pulse"></div>
+        </div>
 
-        {/* Logo Animation */}
+        {/* TEXTURE OVERLAY (GOLD GRID) */}
+        {/* Only the grid is Gold. Opacity is set to 0.15 for a Slightly Golden look */}
+        <div className="absolute inset-0 opacity-[0.15]" 
+             style={{ 
+                 backgroundImage: 'linear-gradient(#FFD700 1px, transparent 1px), linear-gradient(90deg, #FFD700 1px, transparent 1px)', 
+                 backgroundSize: '50px 50px' 
+             }}>
+        </div>
+
+        {/* LOGO CONTENT  */}
         <div className="relative z-10 flex flex-col items-center">
-            <div className="relative mb-6">
-                {/* Glowing Ring */}
-                <div className="absolute inset-0 bg-blue-500 rounded-3xl blur-xl opacity-50 animate-pulse"></div>
-                <div className="relative bg-gradient-to-br from-blue-600 to-cyan-500 p-6 rounded-3xl shadow-2xl animate-bounce">
-                    <Image className="w-12 h-12 text-white" />
+            <div className="relative mb-8 group">
+                <div className="absolute inset-0 bg-blue-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-1000 animate-pulse"></div>
+                
+                <div className="relative bg-gradient-to-br from-gray-900 to-black p-6 rounded-3xl border border-gray-800 shadow-2xl">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent rounded-3xl"></div>
+                    {/* Blue Icon */}
+                    <Image className="w-16 h-16 text-blue-500 relative z-10 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
                 </div>
             </div>
             
-            <h1 className="text-4xl font-bold text-white tracking-tight mb-2 animate-pulse">
+            {/* White/Grey Text */}
+            <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500 tracking-tight mb-3 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                 WallpaperHub
             </h1>
-            <p className="text-blue-400 text-sm tracking-widest uppercase font-semibold">
+            {/* Blue Subtitle */}
+            <p className="text-blue-400/80 text-sm tracking-[0.3em] uppercase font-medium animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
                 Curating Masterpieces
             </p>
         </div>
 
-        {/* Loading Spinner at Bottom */}
-        <div className="absolute bottom-12">
-            <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+        {/* LOADING LINE  */}
+        <div className="absolute bottom-16 w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-blue-600 to-cyan-400 w-1/2 animate-[shimmer_1.5s_infinite] rounded-full"></div>
         </div>
+
+        <style>{`
+            @keyframes shimmer {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(200%); }
+            }
+            .animate-spin-slow {
+                animation: spin 15s linear infinite;
+            }
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `}</style>
     </div>
   );
 };
