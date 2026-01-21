@@ -6,7 +6,7 @@ import WallpaperCard from '../components/WallpaperCard';
 import { FloatingParticles, SearchBar } from '../components/SharedUI';
 
 //Added all the new props 
-const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onToggleDarkMode, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast }) => {
+const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onToggleDarkMode, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast, isGuest }) => {
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [size, setSize] = useState('all');
   const [walls, setWalls] = useState([]);
@@ -115,6 +115,7 @@ const SearchPage = ({ initialQuery, username, onLogout, onBack, darkMode, onTogg
                 favorites={favorites}
                 onToggleFavorite={onToggleFavorite}
                 showToast={showToast}
+                isGuest={isGuest}
               />
             ))}
              {filtered.length === 0 && !loading && (

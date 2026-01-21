@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, ArrowRight, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Image, ArrowRight, Mail, Lock, AlertCircle, User } from 'lucide-react';
 
 // MASCOT COMPONENT 
 const LoginMascot = ({ focusedInput, error }) => {
@@ -231,6 +231,23 @@ const LoginPage = ({ onLogin }) => {
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                 </form>
+
+                {/* // GUEST LOGIN */}
+                <div className="mt-4 flex flex-col gap-3">
+                    <div className="relative flex items-center py-2">
+                        <div className="flex-grow border-t border-white/10"></div>
+                        <span className="flex-shrink-0 mx-4 text-gray-500 text-xs uppercase tracking-widest">Or</span>
+                        <div className="flex-grow border-t border-white/10"></div>
+                    </div>
+                    
+                    <button
+                        onClick={() => onLogin('guest')}
+                        className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold py-3.5 rounded-xl transition-all border border-white/10 hover:border-white/20 group"
+                    >
+                        <User className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                        <span>Continue as Guest</span>
+                    </button>
+                </div>
 
                 <div className="mt-8 text-center">
                     <p className="text-gray-500 text-sm">

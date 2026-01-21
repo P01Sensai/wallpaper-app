@@ -6,7 +6,7 @@ import WallpaperCard from '../components/WallpaperCard';
 import { FloatingParticles } from '../components/SharedUI';
 
 // Accepting all new props
-const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggleDarkMode, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast }) => {
+const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggleDarkMode, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast, isGuest }) => {
   const [walls, setWalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [size, setSize] = useState('all');
@@ -106,6 +106,7 @@ const CategoryPage = ({ category, username, onLogout, onBack, darkMode, onToggle
                 favorites={favorites}
                 onToggleFavorite={onToggleFavorite}
                 showToast={showToast}
+                isGuest={isGuest}
               />
             ))}
              {filtered.length === 0 && !loading && (

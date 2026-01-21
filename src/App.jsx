@@ -8,6 +8,7 @@ import ImageModal from './components/ImageModal';
 import { ToastNotification, SplashScreen } from './components/SharedUI';
 
 export default function WallpaperWebsite() {
+  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState('login');
   const [cat, setCat] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,35 +16,37 @@ export default function WallpaperWebsite() {
   const [dark, setDark] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success'});
-  const [isLoading, setIsLoading] = useState(true); // For Splash Screen
 
-  //Toast fucntion or comfirmation
   const showToast = (message, type = 'success') => {
     setToast({show:true, message, type});
     setTimeout(() => setToast(prev => ({...prev, show: false})), 3000);
   }
-  // FAVORITES LOGIC 
-  // Load from LocalStorage when app starts
+
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem('favorites');
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Save to LocalStorage whenever favorites change
   useEffect(() => {
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  // Function to add/remove
+  // RESTRICT FAVORITES 
   const toggleFavorite = (wallpaper) => {
+    // If Guest, block action and show error
+    if (user === 'guest') {
+        showToast("Sign in to save favorites! 🔒", "error");
+        return; 
+    }
+
     setFavorites(prev => {
       const isFav = prev.find(w => w.id === wallpaper.id);
       if (isFav) {
-        showToast("Removed from Favorites", "info"); // Show toast
-        return prev.filter(w => w.id !== wallpaper.id); // Remove
+        showToast("Removed from Favorites", "info"); 
+        return prev.filter(w => w.id !== wallpaper.id); 
       } else {
-        showToast("Added to Favorites ❤️", "success"); // Show toast
-        return [...prev, wallpaper]; // Add
+        showToast("Added to Favorites ❤️", "success"); 
+        return [...prev, wallpaper]; 
       }
     });
   };
@@ -64,27 +67,35 @@ export default function WallpaperWebsite() {
       setSearchQuery('');
   }
 
-  // Pass these new powers to every page
+  // RESTRICT NAVIGATION 
+  const handleGoToFavorites = () => {
+      if (user === 'guest') {
+          showToast("Sign in to view favorites! 🔒", "error");
+          return;
+      }
+      setPage('favorites');
+  }
+
+  
   const commonProps = {
-      username: user,
+      username: user === 'guest' ? 'Guest_User' : user,
       onLogout: handleLogout,
       darkMode: dark,
       onToggleDarkMode: () => setDark(!dark),
       onImageClick: (img) => setSelectedImage(img),
-      // Pass the favorites data down
       favorites: favorites,
       onToggleFavorite: toggleFavorite,
-      onGoToFavorites: () => setPage('favorites'), // New Navigation helper
-      showToast: showToast // Pass down the toast function
+      onGoToFavorites: handleGoToFavorites,
+      showToast: showToast,
+      isGuest: user === 'guest' 
   };
 
   return (
     <>
-      {/* Splash Screen */}
       {isLoading && <SplashScreen finishLoading={() => setIsLoading(false)} />}
-      {/* Toast Notification */}
+      
       <ToastNotification show={toast.show} message={toast.message} type={toast.type} />
-      {/* Modal now knows if image is liked */}
+      
       <ImageModal 
         wallpaper={selectedImage} 
         onClose={() => setSelectedImage(null)} 
@@ -92,24 +103,26 @@ export default function WallpaperWebsite() {
         isFavorite={favorites.some(f => f.id === selectedImage?.id)}
         onToggleFavorite={() => selectedImage && toggleFavorite(selectedImage)}
         showToast={showToast}
+        isGuest={user === 'guest'} // Pass to Modal to block download there too
       />
 
-      {page === 'login' ? (
-        <LoginPage onLogin={u => { setUser(u); setPage('home'); }} />
-      ) : page === 'category' && cat ? (
-        <CategoryPage category={cat} onBack={handleBackToHome} {...commonProps} />
-      ) : page === 'search' && searchQuery ? (
-        <SearchPage initialQuery={searchQuery} onBack={handleBackToHome} {...commonProps} />
-      ) : page === 'favorites' ? (  
-        // New Route for Favorites Page
-        <FavoritesPage onBack={handleBackToHome} {...commonProps} />
-      ) : (
-        <HomePage 
-          onCategoryClick={c => { setCat(c); setPage('category'); }} 
-          onMainSearch={handleAppSearch}
-          {...commonProps} 
-        />
-      )}
+      <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+        {page === 'login' ? (
+            <LoginPage onLogin={u => { setUser(u); setPage('home'); }} />
+        ) : page === 'category' && cat ? (
+            <CategoryPage category={cat} onBack={handleBackToHome} {...commonProps} />
+        ) : page === 'search' && searchQuery ? (
+            <SearchPage initialQuery={searchQuery} onBack={handleBackToHome} {...commonProps} />
+        ) : page === 'favorites' ? (  
+            <FavoritesPage onBack={handleBackToHome} {...commonProps} />
+        ) : (
+            <HomePage 
+            onCategoryClick={c => { setCat(c); setPage('category'); }} 
+            onMainSearch={handleAppSearch}
+            {...commonProps} 
+            />
+        )}
+      </div>
     </>
   );
 }

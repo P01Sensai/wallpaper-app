@@ -143,7 +143,7 @@ const HeroSection = ({ heroImage, onSearch }) => {
 
 // Main HomePage Component 
 
-const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast }) => {
+const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkMode, onMainSearch, onImageClick, favorites, onToggleFavorite, onGoToFavorites, showToast, isGuest }) => {
   const [slide, setSlide] = useState(0);
   const [trending, setTrending] = useState([]);
   const [popular, setPopular] = useState([]);
@@ -235,6 +235,7 @@ const HomePage = ({ username, onLogout, onCategoryClick, darkMode, onToggleDarkM
                         favorites={favorites} 
                         onToggleFavorite={onToggleFavorite} 
                         showToast={showToast} 
+                        isGuest={isGuest}
                     />
                 ))}
               </div>
