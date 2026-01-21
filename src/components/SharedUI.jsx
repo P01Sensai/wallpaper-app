@@ -146,8 +146,8 @@ export const SplashScreen = ({ finishLoading }) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
         setVisible(false);
-        setTimeout(finishLoading, 700); 
-    }, 3000); 
+        setTimeout(finishLoading, 500); 
+    }, 1800); 
     return () => clearTimeout(timeout);
   }, [finishLoading]);
 
