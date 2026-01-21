@@ -96,10 +96,10 @@ const LoginPage = ({ onLogin }) => {
       </div>
 
       {/* LEFT SIDE: LOGO + CAROUSEL */}
-      {/* Changed to flex-col justify-between so Logo is at top, Carousel in middle */}
+      
       <div className="hidden lg:flex w-1/2 relative z-10 flex-col justify-between p-12">
         
-        {/* LOGO HEADER (Top Left of Screen) */}
+        {/* LOGO HEADER */}
         <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-500/30">
                 <Image className="w-6 h-6 text-white" />
@@ -107,7 +107,7 @@ const LoginPage = ({ onLogin }) => {
             <span className="text-xl font-bold text-white tracking-tight drop-shadow-md">WallpaperHub</span>
         </div>
 
-        {/* CAROUSEL (Middle, Large) */}
+        {/* CAROUSEL  */}
         <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/10">
             {/* Carousel Images */}
             {slides.map((slide, index) => (
