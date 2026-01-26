@@ -9,6 +9,8 @@ import { ToastNotification, SplashScreen } from './components/SharedUI';
 
 export default function WallpaperWebsite() {
   const [isLoading, setIsLoading] = useState(true);
+  
+  // State
   const [page, setPage] = useState('login');
   const [cat, setCat] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,11 +19,33 @@ export default function WallpaperWebsite() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success'});
 
-  const showToast = (message, type = 'success') => {
-    setToast({show:true, message, type});
-    setTimeout(() => setToast(prev => ({...prev, show: false})), 3000);
-  }
+ 
+  useEffect(() => {
 
+    window.history.replaceState({ page: 'login' }, '', '');
+
+    const handleBackButton = (event) => {
+      if (event.state) {
+        
+        setPage(event.state.page || 'login');
+        if (event.state.cat) setCat(event.state.cat);
+        if (event.state.searchQuery) setSearchQuery(event.state.searchQuery);
+      }
+    };
+
+    
+    window.addEventListener('popstate', handleBackButton);
+    return () => window.removeEventListener('popstate', handleBackButton);
+  }, []);
+
+  
+  const navigateTo = (newPage, extraState = {}) => {
+    setPage(newPage);
+    
+    window.history.pushState({ page: newPage, ...extraState }, '', '');
+  };
+
+  // FAVORITES LOGIC
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem('favorites');
     return saved ? JSON.parse(saved) : [];
@@ -31,9 +55,12 @@ export default function WallpaperWebsite() {
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  // RESTRICT FAVORITES 
+  const showToast = (message, type = 'success') => {
+    setToast({show:true, message, type});
+    setTimeout(() => setToast(prev => ({...prev, show: false})), 3000);
+  }
+
   const toggleFavorite = (wallpaper) => {
-    // If Guest, block action and show error
     if (user === 'guest') {
         showToast("Sign in to save favorites! 🔒", "error");
         return; 
@@ -51,32 +78,41 @@ export default function WallpaperWebsite() {
     });
   };
 
-  const handleAppSearch = (query) => {
-    setSearchQuery(query);
-    setPage('search');
+  // NAVIGATION HANDLERS 
+
+  const handleLogin = (username) => {
+      setUser(username);
+     
+      setPage('home');
+      window.history.replaceState({ page: 'home' }, '', '');
   };
 
-  const handleLogout = () => {
-    setUser('');
-    setPage('login');
-  }
+  const handleCategoryClick = (category) => {
+      setCat(category);
+      navigateTo('category', { cat: category });
+  };
 
-  const handleBackToHome = () => {
-      setPage('home');
-      setCat(null);
-      setSearchQuery('');
-  }
+  const handleAppSearch = (query) => {
+    setSearchQuery(query);
+    navigateTo('search', { searchQuery: query });
+  };
 
-  // RESTRICT NAVIGATION 
   const handleGoToFavorites = () => {
       if (user === 'guest') {
           showToast("Sign in to view favorites! 🔒", "error");
           return;
       }
-      setPage('favorites');
+      navigateTo('favorites');
   }
 
   
+
+  const handleLogout = () => {
+    setUser('');
+    setPage('login');
+    window.history.replaceState({ page: 'login' }, '', '');
+  }
+
   const commonProps = {
       username: user === 'guest' ? 'Guest_User' : user,
       onLogout: handleLogout,
@@ -87,7 +123,7 @@ export default function WallpaperWebsite() {
       onToggleFavorite: toggleFavorite,
       onGoToFavorites: handleGoToFavorites,
       showToast: showToast,
-      isGuest: user === 'guest' 
+      isGuest: user === 'guest'
   };
 
   return (
@@ -103,21 +139,23 @@ export default function WallpaperWebsite() {
         isFavorite={favorites.some(f => f.id === selectedImage?.id)}
         onToggleFavorite={() => selectedImage && toggleFavorite(selectedImage)}
         showToast={showToast}
-        isGuest={user === 'guest'} // Pass to Modal to block download there too
+        isGuest={user === 'guest'}
       />
 
       <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
         {page === 'login' ? (
-            <LoginPage onLogin={u => { setUser(u); setPage('home'); }} />
+           
+            <LoginPage onLogin={handleLogin} />
         ) : page === 'category' && cat ? (
-            <CategoryPage category={cat} onBack={handleBackToHome} {...commonProps} />
+            <CategoryPage category={cat} onBack={() => window.history.back()} {...commonProps} />
         ) : page === 'search' && searchQuery ? (
-            <SearchPage initialQuery={searchQuery} onBack={handleBackToHome} {...commonProps} />
+            <SearchPage initialQuery={searchQuery} onBack={() => window.history.back()} {...commonProps} />
         ) : page === 'favorites' ? (  
-            <FavoritesPage onBack={handleBackToHome} {...commonProps} />
+            <FavoritesPage onBack={() => window.history.back()} {...commonProps} />
         ) : (
             <HomePage 
-            onCategoryClick={c => { setCat(c); setPage('category'); }} 
+            
+            onCategoryClick={handleCategoryClick} 
             onMainSearch={handleAppSearch}
             {...commonProps} 
             />
