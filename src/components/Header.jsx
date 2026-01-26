@@ -50,7 +50,7 @@ const Header = ({ username, onLogout, showBack, onBack, categoryName, categoryIc
           {/* RIGHT SIDE: Controls & Menu */}
           <div className="flex items-center gap-2 sm:gap-4">
 
-            {/* 1. Dark Mode Toggle (Now on Right) */}
+            {/* 1. Dark Mode Toggle */}
             <button
               onClick={onToggleDarkMode}
               className={`p-2 rounded-full transition-all ${darkMode ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
@@ -59,7 +59,7 @@ const Header = ({ username, onLogout, showBack, onBack, categoryName, categoryIc
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
-            {/* 2. Menu Button (Hamburger) */}
+            {/* 2. Menu Button */}
             <div className="relative">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}

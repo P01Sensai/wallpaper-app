@@ -19,8 +19,12 @@ const Carousel = ({ slides, currentSlide, onNext, onPrev, onDotClick }) => (
         </div>
       ))}
     </div>
-    <button onClick={onPrev} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all"><ChevronLeft className="w-6 h-6" /></button>
-    <button onClick={onNext} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all"><ChevronRight className="w-6 h-6" /></button>
+    <button onClick={onPrev} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all">
+    <ChevronLeft className="w-6 h-6" />
+    </button>
+    <button onClick={onNext} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all">
+    <ChevronRight className="w-6 h-6" />
+    </button>
     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
       {slides.map((_, i) => <button key={i} onClick={() => onDotClick(i)} className={`h-2 rounded-full transition-all ${i === currentSlide ? 'bg-white w-8' : 'bg-white/50 w-2'}`} />)}
     </div>
