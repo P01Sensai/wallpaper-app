@@ -42,8 +42,7 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites 
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
 
         {/* Top Right Actions */}
-        {/* Changed opacity logic: On mobile (touch), they might be hard to hover, so we can make them always visible or keep hover. 
-            I'll keep hover but use a darker background so they are VISIBLE on light images. */}
+        
         <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
           
           {/* Favorite Button */}
