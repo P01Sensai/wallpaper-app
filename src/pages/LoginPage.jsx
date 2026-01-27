@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Image, ArrowRight, Mail, Lock, AlertCircle, User } from 'lucide-react';
+import { Image, ArrowRight, Mail, Lock, AlertCircle, User, Loader2 } from 'lucide-react';
+import { auth } from '../firebase'; 
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signInAnonymously 
+} from 'firebase/auth';
 
-// MASCOT COMPONENT 
+// MASCOT COMPONENT
 const LoginMascot = ({ focusedInput, error }) => {
   const isPassword = focusedInput === 'password';
   return (
@@ -35,9 +41,12 @@ const LoginMascot = ({ focusedInput, error }) => {
   );
 };
 
-//  MAIN PAGE 
-const LoginPage = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
+// MAIN PAGE 
+const LoginPage = () => {
+  
+  const [isSignUp, setIsSignUp] = useState(false); 
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -68,16 +77,45 @@ const LoginPage = ({ onLogin }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSubmit = (e) => {
+  // FIREBASE 
+  const handleAuth = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (username === 'admin' && password === 'password') {
-        onLogin(username);
-    } else {
-        setError('Invalid credentials. Try: admin / password');
-        setPassword('');
+    try {
+        if (isSignUp) {
+            // Create new account
+            await createUserWithEmailAndPassword(auth, email, password);
+        } else {
+            // Login existing account
+            await signInWithEmailAndPassword(auth, email, password);
+        }
+    
+    } catch (err) {
+        // Handling Errors 
+        console.error(err);
+        if (err.code === 'auth/invalid-email') setError('Invalid email address.');
+        else if (err.code === 'auth/user-not-found') setError('No account found.');
+        else if (err.code === 'auth/wrong-password') setError('Incorrect password.');
+        else if (err.code === 'auth/email-already-in-use') setError('Email already used.');
+        else if (err.code === 'auth/weak-password') setError('Password too weak (min 6 chars).');
+        else setError('Authentication failed. Try again.');
+    } finally {
+        setLoading(false);
     }
+  };
+
+  const handleGuestLogin = async () => {
+      setError('');
+      setLoading(true);
+      try {
+          await signInAnonymously(auth);
+      } catch (err) {
+          console.error("Guest login error:", err);
+          setError('Guest login failed.');
+          setLoading(false);
+      }
   };
 
   return (
@@ -96,10 +134,7 @@ const LoginPage = ({ onLogin }) => {
       </div>
 
       {/* LEFT SIDE: LOGO + CAROUSEL */}
-      
       <div className="hidden lg:flex w-1/2 relative z-10 flex-col justify-between p-12">
-        
-        {/* LOGO HEADER */}
         <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-500/30">
                 <Image className="w-6 h-6 text-white" />
@@ -107,53 +142,29 @@ const LoginPage = ({ onLogin }) => {
             <span className="text-xl font-bold text-white tracking-tight drop-shadow-md">WallpaperHub</span>
         </div>
 
-        {/* CAROUSEL  */}
         <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-            {/* Carousel Images */}
             {slides.map((slide, index) => (
-                <div 
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                        index === currentSlide ? 'opacity-100' : 'opacity-0'
-                    }`}
-                >
+                <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}>
                     <img src={slide.url} alt="Slide" className="w-full h-full object-cover" />
                 </div>
             ))}
-
-            {/* Vignette & Overlay */}
             <div className="absolute inset-0 shadow-[inset_0_0_100px_40px_rgba(0,0,0,0.8)] z-10"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30 z-10"></div>
-
-            {/* Text Content */}
             <div className="absolute bottom-0 left-0 w-full p-8 z-20">
                  {slides.map((slide, index) => (
-                    <div 
-                        key={index}
-                        className={`transition-all duration-700 absolute bottom-12 left-8 right-8 ${
-                            index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-                        }`}
-                    >
+                    <div key={index} className={`transition-all duration-700 absolute bottom-12 left-8 right-8 ${index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                         <h2 className="text-4xl font-bold text-white mb-3 leading-tight drop-shadow-lg">{slide.title}</h2>
                         <p className="text-lg text-gray-300 drop-shadow-md max-w-lg">{slide.desc}</p>
                     </div>
                  ))}
-                 
-                 {/* Slide Dots */}
                  <div className="flex gap-2 mt-24 pl-1"> 
                     {slides.map((_, idx) => (
-                        <div 
-                            key={idx} 
-                            className={`h-1.5 rounded-full transition-all duration-500 ${
-                                idx === currentSlide ? 'w-8 bg-blue-500' : 'w-2 bg-gray-600'
-                            }`} 
-                        />
+                        <div key={idx} className={`h-1.5 rounded-full transition-all duration-500 ${idx === currentSlide ? 'w-8 bg-blue-500' : 'w-2 bg-gray-600'}`} />
                     ))}
                  </div>
             </div>
         </div>
 
-        {/* FOOTER */}
         <div className="text-gray-500 text-sm">
             © 2026 Pramanshu. All rights reserved.
         </div>
@@ -170,8 +181,12 @@ const LoginPage = ({ onLogin }) => {
 
             <div className="relative mt-4">
                 <div className="mb-6 text-center">
-                    <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
-                    <p className="text-gray-400">Enter your details to access your collection</p>
+                    <h2 className="text-2xl font-bold text-white mb-2">
+                        {isSignUp ? 'Create Account' : 'Welcome Back'}
+                    </h2>
+                    <p className="text-gray-400">
+                        {isSignUp ? 'Sign up to start your collection' : 'Enter your details to access your collection'}
+                    </p>
                 </div>
 
                 {error && (
@@ -181,21 +196,21 @@ const LoginPage = ({ onLogin }) => {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleAuth} className="space-y-5">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300 ml-1">Username</label>
+                        <label className="text-sm font-medium text-gray-300 ml-1">Email</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <Mail className="h-5 w-5 text-gray-500" />
                             </div>
                             <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 onFocus={() => setFocusedInput('username')}
                                 onBlur={() => setFocusedInput(null)}
                                 className={`block w-full pl-11 pr-4 py-3 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${error ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-700 focus:ring-blue-500/50 focus:border-blue-500'}`}
-                                placeholder="admin"
+                                placeholder="name@example.com"
                                 required
                             />
                         </div>
@@ -204,7 +219,6 @@ const LoginPage = ({ onLogin }) => {
                     <div className="space-y-2">
                         <div className="flex justify-between">
                             <label className="text-sm font-medium text-gray-300 ml-1">Password</label>
-                            <span className="text-xs text-gray-500">(Hint: password)</span>
                         </div>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -217,7 +231,7 @@ const LoginPage = ({ onLogin }) => {
                                 onFocus={() => setFocusedInput('password')}
                                 onBlur={() => setFocusedInput(null)}
                                 className={`block w-full pl-11 pr-4 py-3 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${error ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-700 focus:ring-blue-500/50 focus:border-blue-500'}`}
-                                placeholder="password"
+                                placeholder="••••••••"
                                 required
                             />
                         </div>
@@ -225,14 +239,19 @@ const LoginPage = ({ onLogin }) => {
 
                     <button
                         type="submit"
-                        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3.5 rounded-xl transition-all transform active:scale-95 shadow-lg shadow-blue-500/25 group"
+                        disabled={loading}
+                        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3.5 rounded-xl transition-all transform active:scale-95 shadow-lg shadow-blue-500/25 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <span>Sign In</span>
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                            <>
+                                <span>{isSignUp ? 'Sign Up' : 'Sign In'}</span>
+                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </>
+                        )}
                     </button>
                 </form>
 
-                {/* // GUEST LOGIN */}
+                {/* GUEST LOGIN */}
                 <div className="mt-4 flex flex-col gap-3">
                     <div className="relative flex items-center py-2">
                         <div className="flex-grow border-t border-white/10"></div>
@@ -241,19 +260,27 @@ const LoginPage = ({ onLogin }) => {
                     </div>
                     
                     <button
-                        onClick={() => onLogin('guest')}
-                        className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold py-3.5 rounded-xl transition-all border border-white/10 hover:border-white/20 group"
+                        onClick={handleGuestLogin}
+                        disabled={loading}
+                        className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold py-3.5 rounded-xl transition-all border border-white/10 hover:border-white/20 group disabled:opacity-50"
                     >
-                        <User className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-                        <span>Continue as Guest</span>
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                            <>
+                                <User className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                                <span>Continue as Guest</span>
+                            </>
+                        )}
                     </button>
                 </div>
 
                 <div className="mt-8 text-center">
                     <p className="text-gray-500 text-sm">
-                        Don't have an account?{' '}
-                        <button className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
-                            Create one now
+                        {isSignUp ? "Already have an account? " : "Don't have an account? "}
+                        <button 
+                            onClick={() => { setIsSignUp(!isSignUp); setError(''); }}
+                            className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                        >
+                            {isSignUp ? 'Sign In' : 'Create one now'}
                         </button>
                     </p>
                 </div>
