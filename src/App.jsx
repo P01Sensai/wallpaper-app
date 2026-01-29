@@ -22,18 +22,34 @@ export default function WallpaperWebsite() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success'});
 
-  //  FIREBASE
+  // FAVORITES STATE (Initialize Empty)
+  const [favorites, setFavorites] = useState([]);
+
+  // FIREBASE AUTH & DATA LOADING 
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
   
+        //  LOAD FAVORITES DIRECTLY HERE
+        if (!currentUser.isAnonymous) {
+            const userKey = `favorites_${currentUser.uid}`;
+            const saved = localStorage.getItem(userKey);
+            setFavorites(saved ? JSON.parse(saved) : []);
+        } else {
+            setFavorites([]); // Guest starts empty
+        }
+
+        // Handle Redirect
         if (page === 'login') {
             setPage('home');
             window.history.replaceState({ page: 'home' }, '', '');
         }
       } else {
+        // User logged out
         setUser(null);
+        setFavorites([]); // Clear data
         setPage('login');
         window.history.replaceState({ page: 'login' }, '', '');
       }
@@ -42,11 +58,10 @@ export default function WallpaperWebsite() {
     });
 
     return () => unsubscribe();
-  }, [page]);
+  }, [page]); // Keep page dependency for redirect logic
 
- 
+  // HISTORY MANAGER
   useEffect(() => {
-   
     if (!window.history.state) {
         window.history.replaceState({ page: 'login' }, '', '');
     }
@@ -68,22 +83,22 @@ export default function WallpaperWebsite() {
     window.history.pushState({ page: newPage, ...extraState }, '', '');
   };
 
-  const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem('favorites');
-    return saved ? JSON.parse(saved) : [];
-  });
-
+  // SAVE FAVORITES ONLY 
+  
   useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-  }, [favorites]);
+    if (user && !user.isAnonymous && user.uid) {
+      const userKey = `favorites_${user.uid}`;
+      localStorage.setItem(userKey, JSON.stringify(favorites));
+    }
+  }, [favorites, user?.uid]); 
 
+  // TOAST FUNCTION
   const showToast = (message, type = 'success') => {
     setToast({show:true, message, type});
     setTimeout(() => setToast(prev => ({...prev, show: false})), 3000);
   }
 
   const toggleFavorite = (wallpaper) => {
-    // Firebase uses isAnonymous to check for guest users
     if (!user || user.isAnonymous) {
         showToast("Sign in to save favorites! 🔒", "error");
         return; 
@@ -130,8 +145,7 @@ export default function WallpaperWebsite() {
   }
 
   const commonProps = {
-
-      username: user?.isAnonymous ? 'Guest' : (user?.email?.split('@')[0] || 'User'), // Simple username from email
+      username: user?.isAnonymous ? 'Guest' : (user?.email?.split('@')[0] || 'User'),
       onLogout: handleLogout,
       darkMode: dark,
       onToggleDarkMode: () => setDark(!dark),
