@@ -47,13 +47,13 @@
 
 ## 📸 Screenshots
 
-| Home Page | Image Editor | Mobile View |
+| Home Page | Image Editor | Login Page |
 |:---:|:---:|:---:|
 | ![Home](public/Screenshots/HomePageDark.png) | ![Modal View](public/Screenshots/CustomizeOptions.png) | ![Login Page](public/Screenshots/LoginPage.png) |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 Follow these steps to run the project locally.
 
