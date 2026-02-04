@@ -171,6 +171,7 @@ export default function WallpaperWebsite() {
         onToggleFavorite={() => selectedImage && toggleFavorite(selectedImage)}
         showToast={showToast}
         isGuest={user?.isAnonymous || false}
+        key={selectedImage?.id}
       />
 
       <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>

@@ -5,7 +5,8 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites 
   
   const isFavorite = favorites.some(f => f.id === wallpaper.id);
 
-  const handleDownload = (e) => {
+  // Use Blob method for direct download 
+  const handleDownload = async (e) => {
     e.stopPropagation(); 
     
     if (isGuest) {
@@ -13,15 +14,30 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites 
         return;
     }
 
-    // Download Logic
-    const link = document.createElement('a');
-    link.href = wallpaper.urls.full;
-    link.setAttribute('download', `wallpaper-${wallpaper.id}.jpg`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    if (showToast) showToast("Download started!", "success");
+    try {
+        if (showToast) showToast("Starting download...", "info");
+        
+        // Fetch the image as a "Blob" 
+        const response = await fetch(wallpaper.urls.full);
+        const blob = await response.blob();
+        
+        // Create a temporary link to that File
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `wallpaper-${wallpaper.id}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        if (showToast) showToast("Download started! 🚀", "success");
+    } catch (error) {
+        console.error("Download failed:", error);
+        if (showToast) showToast("Download failed", "error");
+    }
   };
 
   return (
@@ -75,7 +91,7 @@ const WallpaperCard = ({ wallpaper, showSize, darkMode, onImageClick, favorites 
            </div>
         )}
 
-        {/* User Info (Bottom) */}
+        {/* User Info  */}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
            <p className="text-white text-sm font-medium truncate">{wallpaper.user.name}</p>
            <div className="flex items-center gap-1 text-white/70 text-xs mt-0.5">

@@ -23,7 +23,7 @@ export default defineConfig({
             src: '/pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any maskable' // Crucial for Android round icons
+            purpose: 'any maskable' // for Android round icons
           },
           {
             src: '/pwa-512x512.png',
