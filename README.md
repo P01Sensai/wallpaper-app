@@ -49,7 +49,7 @@
 
 | Home Page | Image Editor | Mobile View |
 |:---:|:---:|:---:|
-| ![Home](public/Screenshots/HomePageDark.png) | ![Modal View](public/Screenshots/CustomizeOption.png) | ![](public/Screenshots/LoginPage.png) |
+| ![Home](public/Screenshots/HomePageDark.png) | ![Modal View](public/Screenshots/CustomizeOptions.png) | ![Login Page](public/Screenshots/LoginPage.png) |
 
 ---
 
