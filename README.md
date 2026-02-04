@@ -1,18 +1,63 @@
-# React + Vite
+# 🌟 WallpaperHub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**WallpaperHub** is a premium, progressive web application (PWA) that allows users to discover, customize, and download high-resolution 4K wallpapers. It features a built-in image editor, secure authentication, and a cinematic UI.
 
-Currently, two official plugins are available:
+![WallpaperHub Banner](public/screenshots/banner.png) 
+## 🚀 Live Demo
+[Insert Your Vercel/Netlify Link Here](https://your-app-url.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### 🎨 **Interactive Image Editor**
+- **Built-in Studio:** Customize wallpapers before downloading.
+- **Crop & Resize:** Presets for Phone (9:16) and Desktop (16:9).
+- **Filters:** Adjust Blur and Zoom levels for the perfect home screen look.
+- **Pure Client-Side:** Image processing happens instantly in the browser using HTML5 Canvas.
 
-Note: This will impact Vite dev & build performances.
+### 🔐 **Smart Authentication**
+- **Firebase Integration:** Secure Google & Email login.
+- **Guest Mode:** Browse freely; sign in to unlock premium features like "Save to Favorites."
+- **Private Favorites:** Each user has their own persistent list of liked wallpapers.
 
-## Expanding the ESLint configuration
+### 📱 **Progressive Web App (PWA)**
+- **Installable:** Works like a native app on iOS and Android.
+- **Offline Capable:** Caches assets for faster loading.
+- **App Icon:** Custom generated icons for a professional home screen presence.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### ⚡ **Modern Tech Stack**
+- **Cinematic UI:** Glassmorphism, smooth transitions, and masonry grids.
+- **Smart Downloads:** Direct "Blob" downloads that bypass "Open in New Tab" issues.
+- **Dark Mode:** Fully responsive dark/light themes.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React (Vite)
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React
+- **Auth:** Firebase Authentication (v10)
+- **API:** Unsplash API
+- **Image Processing:** React-Easy-Crop + HTML5 Canvas
+- **PWA:** Vite-Plugin-PWA
+
+---
+
+## 📸 Screenshots
+
+| Home Page | Image Editor | Mobile View |
+|:---:|:---:|:---:|
+| ![Home](public/screenshots/home.png) | ![Editor](public/screenshots/editor.png) | ![Mobile](public/screenshots/mobile.png) |
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to run the project locally.
+
+### 1. Clone the Repo
+```bash
+git clone [https://github.com/P01Sensai/wallpaper-app.git](https://github.com/P01Sensai/wallpaper-app.git)
+cd wallpaper-app
