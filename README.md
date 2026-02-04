@@ -4,7 +4,7 @@
 
 ![WallpaperHub Banner](public/Screenshots/banner.png) 
 ## 🚀 Live Demo
-[Insert Your Vercel/Netlify Link Here]([https://your-app-url.vercel.app](https://wallpaper-app-phi.vercel.app/))
+[[](https://wallpaper-app-phi.vercel.app/)]
 
 ---
 
