@@ -2,7 +2,7 @@
 
 **WallpaperHub** is a premium, progressive web application (PWA) that allows users to discover, customize, and download high-resolution 4K wallpapers. It features a built-in image editor, secure authentication, and a cinematic UI.
 
-![WallpaperHub Banner](public/screenshots/banner.png) 
+![WallpaperHub Banner](public/Screenshots/banner.png) 
 ## 🚀 Live Demo
 [Insert Your Vercel/Netlify Link Here](https://your-app-url.vercel.app)
 
@@ -49,7 +49,7 @@
 
 | Home Page | Image Editor | Mobile View |
 |:---:|:---:|:---:|
-| ![Home](public/screenshots/home.png) | ![Editor](public/screenshots/editor.png) | ![Mobile](public/screenshots/mobile.png) |
+| ![Home](public/Screenshots/home.png) | ![Editor](public/Screenshots/editor.png) | ![Mobile](public/Screenshots/Login.png) |
 
 ---
 
