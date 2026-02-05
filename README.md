@@ -47,8 +47,23 @@
 ## Getting Started
 
 Follow these steps to run the project locally.
-
 ### 1. Clone the Repo
 ```bash
 git clone [https://github.com/P01Sensai/wallpaper-app.git](https://github.com/P01Sensai/wallpaper-app.git)
 cd wallpaper-app
+```
+### 2. Install Dependencies
+```bash
+npm install
+```
+### 3. Set up environment
+1. for .env file in main folder
+```bash
+VITE_KEY="your unsplash api key "
+```
+2. for firebase.js file in main folder or we can add it in .env for better security- here you will have all configuration for the web
+
+### 4. Run Development Server
+```bash
+npm run dev
+```
