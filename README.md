@@ -4,7 +4,7 @@
 
 ![WallpaperHub Banner](public/Screenshots/banner.png) 
 ## 🚀 Live Demo
-[Insert Your Vercel/Netlify Link Here](https://your-app-url.vercel.app)
+[[Click here](https://wallpaper-app-phi.vercel.app/)]
 
 ---
 
@@ -17,19 +17,10 @@
 - **Pure Client-Side:** Image processing happens instantly in the browser using HTML5 Canvas.
 
 ### 🔐 **Smart Authentication**
-- **Firebase Integration:** Secure Google & Email login.
+- **Firebase Integration:** Secure Email login.
 - **Guest Mode:** Browse freely; sign in to unlock premium features like "Save to Favorites."
 - **Private Favorites:** Each user has their own persistent list of liked wallpapers.
 
-### 📱 **Progressive Web App (PWA)**
-- **Installable:** Works like a native app on iOS and Android.
-- **Offline Capable:** Caches assets for faster loading.
-- **App Icon:** Custom generated icons for a professional home screen presence.
-
-### ⚡ **Modern Tech Stack**
-- **Cinematic UI:** Glassmorphism, smooth transitions, and masonry grids.
-- **Smart Downloads:** Direct "Blob" downloads that bypass "Open in New Tab" issues.
-- **Dark Mode:** Fully responsive dark/light themes.
 
 ---
 
@@ -47,13 +38,13 @@
 
 ## 📸 Screenshots
 
-| Home Page | Image Editor | Mobile View |
+| Home Page | Image Editor | Login Page |
 |:---:|:---:|:---:|
-| ![Home](public/Screenshots/home.png) | ![Editor](public/Screenshots/editor.png) | ![Mobile](public/Screenshots/Login.png) |
+| ![Home](public/Screenshots/HomePageDark.png) | ![Modal View](public/Screenshots/CustomizeOptions.png) | ![Login Page](public/Screenshots/LoginPage.png) |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 Follow these steps to run the project locally.
 
