@@ -4,7 +4,7 @@
 
 ![WallpaperHub Banner](public/Screenshots/banner.png) 
 ## 🚀 Live Demo
-[[](https://wallpaper-app-phi.vercel.app/)]
+[[Click here](https://wallpaper-app-phi.vercel.app/)]
 
 ---
 
